@@ -1,9 +1,9 @@
 //
 //  GCDAsyncProxySocket.h
-//  ProxyKit
+//  OnionKit
 //
-//  Created by Chris Ballinger on 11/19/13.
-//  Copyright (c) 2013 Chris Ballinger. All rights reserved.
+//  Created by Christopher Ballinger on 11/19/13.
+//  Copyright (c) 2013 ChatSecure. All rights reserved.
 //
 
 #import "GCDAsyncSocket.h"
@@ -15,7 +15,7 @@ typedef NS_ENUM(int16_t, GCDAsyncSocketSOCKSVersion) {
 };
 
 typedef NS_ENUM(int16_t, GCDAsyncProxySocketError) {
-    GCDAsyncProxySocketNoError = 0,           // Never used
+	GCDAsyncProxySocketNoError = 0,           // Never used
     GCDAsyncProxySocketAuthenticationError
 };
 
