@@ -9,6 +9,13 @@
 #import "GCDAsyncProxySocket.h"
 #import "Endian.h"
 
+#import "DDLog.h"
+#if DEBUG
+    static const int ddLogLevel = LOG_LEVEL_VERBOSE;
+#else
+    static const int ddLogLevel = LOG_LEVEL_OFF;
+#endif
+
 
 // Define various socket tags
 #define SOCKS_OPEN             10100
