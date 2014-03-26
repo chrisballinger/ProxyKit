@@ -50,7 +50,6 @@
 }
 
 - (void) socket:(GCDAsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag {
-    //NSLog(@"didReadData with tag %ld: %@", tag, data);
     if (tag == SOCKS_OPEN) {
         //      +-----+--------+
         // NAME | VER | METHOD |
@@ -67,7 +66,6 @@
         responseBytes[0] = 5; // VER = SOCKS5
         responseBytes[1] = 0; // METHOD = No Auth
         NSData *responseData = [NSData dataWithBytesNoCopy:responseBytes length:responseLength freeWhenDone:YES];
-        NSLog(@"writing SOCKS_OPEN: %@", responseData);
         [sock writeData:responseData withTimeout:-1 tag:SOCKS_OPEN];
         [sock readDataToLength:4 withTimeout:TIMEOUT_CONNECT tag:SOCKS_CONNECT_INIT];
     } else if (tag == SOCKS_CONNECT_INIT) {
@@ -86,11 +84,7 @@
         // Address      = P:D (P=LengthOfDomain D=DomainWithoutNullTermination)
         // Port         = 0
         uint8_t *requestBytes = (uint8_t*)[data bytes];
-        uint8_t version = requestBytes[0];
-        uint8_t command = requestBytes[1];
-        //uint8_t reserved = requestBytes[2];
         uint8_t addressType = requestBytes[3];
-        NSLog(@"version %d, command %d, addressType %d", version, command, addressType);
         if (addressType == 1) {
             [sock readDataToLength:4 withTimeout:-1 tag:SOCKS_CONNECT_IPv4];
         } else if (addressType == 3) {
@@ -102,13 +96,11 @@
         uint8_t *address = malloc(INET_ADDRSTRLEN * sizeof(uint8_t));
         inet_ntop(AF_INET, data.bytes, (char*) address, INET_ADDRSTRLEN);
         _destinationHost = [[NSString alloc] initWithBytesNoCopy:address length:INET_ADDRSTRLEN encoding:NSUTF8StringEncoding freeWhenDone:YES];
-        NSLog(@"destination host: %@", _destinationHost);
         [sock readDataToLength:2 withTimeout:TIMEOUT_CONNECT tag:SOCKS_CONNECT_PORT];
     } else if (tag == SOCKS_CONNECT_IPv6) {
         uint8_t *address = malloc(INET6_ADDRSTRLEN * sizeof(uint8_t));
         inet_ntop(AF_INET6, data.bytes, (char*) address, INET6_ADDRSTRLEN);
         _destinationHost = [[NSString alloc] initWithBytesNoCopy:address length:INET6_ADDRSTRLEN encoding:NSUTF8StringEncoding freeWhenDone:YES];
-        NSLog(@"destination host: %@", _destinationHost);
         [sock readDataToLength:2 withTimeout:TIMEOUT_CONNECT tag:SOCKS_CONNECT_PORT];
     } else if (tag == SOCKS_CONNECT_DOMAIN) {
         _destinationHost = [[NSString alloc] initWithBytes:data.bytes length:data.length encoding:NSUTF8StringEncoding];
@@ -122,7 +114,6 @@
         memcpy(&rawPort, [data bytes], 2);
         _destinationPort = NSSwapBigShortToHost(rawPort);
         NSError *error = nil;
-        NSLog(@"connecting to %@:%d", self.destinationHost, self.destinationPort);
         [self.outgoingSocket connectToHost:self.destinationHost onPort:self.destinationPort error:&error];
     } else if (tag == SOCKS_INCOMING_READ) {
         [self.outgoingSocket writeData:data withTimeout:-1 tag:SOCKS_OUTGOING_WRITE];
@@ -132,8 +123,6 @@
         [self.proxySocket writeData:data withTimeout:-1 tag:SOCKS_INCOMING_WRITE];
         [self.proxySocket readDataWithTimeout:-1 tag:SOCKS_INCOMING_READ];
         [self.outgoingSocket readDataWithTimeout:-1 tag:SOCKS_OUTGOING_READ];
-    } else {
-        NSLog(@"oh nooooo");
     }
 }
 
@@ -160,7 +149,6 @@
 }
 
 - (void) socket:(GCDAsyncSocket *)sock didConnectToHost:(NSString *)host port:(uint16_t)port {
-    NSLog(@"connected to %@:%d", host, port);
     // We write out 5 bytes which we expect to be:
     // 0: ver  = 5
     // 1: rep  = 0
@@ -181,10 +169,6 @@
     NSData *responseData = [NSData dataWithBytesNoCopy:responseBytes length:responseLength freeWhenDone:YES];
     [self.proxySocket writeData:responseData withTimeout:-1 tag:SOCKS_CONNECT_REPLY];
     [self.proxySocket readDataWithTimeout:-1 tag:SOCKS_INCOMING_READ];
-}
-
-- (void) socket:(GCDAsyncSocket *)sock didWriteDataWithTag:(long)tag {
-    //NSLog(@"wrote data with tag: %ld", tag);
 }
 
 @end
