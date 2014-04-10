@@ -10,9 +10,11 @@ Pod::Spec.new do |s|
   s.ios.deployment_target = "6.0"
   s.osx.deployment_target = "10.7"
 
-  s.source       = { :git => "https://github.com/chrisballinger/ProxyKit.git", :tag => s.version.to_s }
+  #s.source       = { :git => "https://github.com/chrisballinger/ProxyKit.git", :tag => s.version.to_s }
+  s.source       = { :git => "https://github.com/chrisballinger/ProxyKit.git", :branch => "master" }
 
   s.source_files  = "ProxyKit/*.{h,m}"
   s.requires_arc = true
   s.dependency 'CocoaAsyncSocket', '~> 7.3'
+  s.dependency 'CocoaLumberjack', '~> 1.8'
 end

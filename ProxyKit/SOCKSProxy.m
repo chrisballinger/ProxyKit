@@ -42,7 +42,7 @@
 
 - (void) socket:(GCDAsyncSocket *)sock didAcceptNewSocket:(GCDAsyncSocket *)newSocket {
     NSLog(@"Accepted new socket: %@", newSocket);
-#ifdef TARGET_OS_IPHONE
+#if TARGET_OS_IPHONE
     [newSocket performBlock:^{
         BOOL enableBackground = [newSocket enableBackgroundingOnSocket];
         if (!enableBackground) {
