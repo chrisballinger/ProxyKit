@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "ProxyKit"
-  s.version      = "1.0.0"
+  s.version      = "1.0.1"
   s.summary      = "SOCKS proxy server and socket client built upon GCDAsyncSocket."
   s.homepage     = "https://github.com/chrisballinger/ProxyKit"
   s.license      = { :type => "MIT", :file => "LICENSE" }  
