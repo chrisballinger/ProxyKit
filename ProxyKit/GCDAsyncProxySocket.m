@@ -477,28 +477,15 @@
     }
 }
 
-- (BOOL)socketShouldManuallyEvaluateTrust:(GCDAsyncSocket *)sock
+- (void)socket:(GCDAsyncSocket *)sock didReceiveTrust:(SecTrustRef)trust completionHandler:(void (^)(BOOL))completionHandler
 {
-    if (self.delegate && [self.delegate respondsToSelector:@selector(socketShouldManuallyEvaluateTrust:)]) {
-        return [self.delegate socketShouldManuallyEvaluateTrust:self];
+    if (self.delegate && [self.delegate respondsToSelector:@selector(socket:didReceiveTrust:completionHandler:)]) {
+        dispatch_async(self.delegateQueue, ^{
+            @autoreleasepool {
+                [self.delegate socket:self didReceiveTrust:trust completionHandler:completionHandler];
+            }
+        });
     }
-    return NO;
-}
-
-- (BOOL)socket:(GCDAsyncSocket *)sock shouldFinishConnectionWithTrust:(SecTrustRef)trust status:(OSStatus)status
-{
-    if (self.delegate && [self.delegate respondsToSelector:@selector(socket:shouldFinishConnectionWithTrust:status:)]) {
-        return [self.delegate socket:self shouldFinishConnectionWithTrust:trust status:status];
-    }
-    return YES;
-}
-
-- (BOOL)socket:(GCDAsyncSocket *)sock shouldTrustPeer:(SecTrustRef)trust
-{
-    if (self.delegate && [self.delegate respondsToSelector:@selector(socket:shouldTrustPeer:)]) {
-        return [self.delegate socket:self shouldTrustPeer:trust];
-    }
-    return NO;
 }
 
 
