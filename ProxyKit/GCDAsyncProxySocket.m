@@ -7,7 +7,6 @@
 //
 
 #import "GCDAsyncProxySocket.h"
-#import "Endian.h"
 
 #import "DDLog.h"
 #if DEBUG
@@ -221,7 +220,7 @@
     offset++;
 	memcpy(byteBuffer+offset, [hostData bytes], hostLength);
 	offset+=hostLength;
-	uint16_t port = EndianU16_NtoB(self.destinationPort);
+	uint16_t port = htons(self.destinationPort);
     NSUInteger portLength = 2;
 	memcpy(byteBuffer+offset, &port, portLength);
     offset+=portLength;

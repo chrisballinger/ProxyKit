@@ -32,6 +32,8 @@
 @property (nonatomic, strong) GCDAsyncSocket *proxySocket;
 @property (nonatomic, strong) GCDAsyncSocket *outgoingSocket;
 @property (nonatomic) dispatch_queue_t delegateQueue;
+@property (nonatomic) NSUInteger totalBytesWritten;
+@property (nonatomic) NSUInteger totalBytesRead;
 @end
 
 @implementation SOCKSProxySocket
@@ -39,7 +41,8 @@
 - (id) initWithSocket:(GCDAsyncSocket *)socket delegate:(id<SOCKSProxySocketDelegate>)delegate {
     if (self = [super init]) {
         _delegate = delegate;
-        self.delegateQueue = dispatch_queue_create("socket queue", 0);
+        self.delegateQueue = dispatch_queue_create("SOCKSProxySocket socket delegate queue", 0);
+        self.callbackQueue = dispatch_queue_create("SOCKSProxySocket callback queue", 0);
         self.proxySocket = socket;
         self.proxySocket.delegate = self;
         self.proxySocket.delegateQueue = self.delegateQueue;
@@ -119,10 +122,24 @@
         [self.outgoingSocket writeData:data withTimeout:-1 tag:SOCKS_OUTGOING_WRITE];
         [self.outgoingSocket readDataWithTimeout:-1 tag:SOCKS_OUTGOING_READ];
         [self.proxySocket readDataWithTimeout:-1 tag:SOCKS_INCOMING_READ];
+        NSUInteger dataLength = data.length;
+        self.totalBytesWritten += dataLength;
+        if (self.delegate && [self.delegate respondsToSelector:@selector(proxySocket:didWriteDataOfLength:)]) {
+            dispatch_async(self.callbackQueue, ^{
+                [self.delegate proxySocket:self didWriteDataOfLength:dataLength];
+            });
+        }
     } else if (tag == SOCKS_OUTGOING_READ) {
         [self.proxySocket writeData:data withTimeout:-1 tag:SOCKS_INCOMING_WRITE];
         [self.proxySocket readDataWithTimeout:-1 tag:SOCKS_INCOMING_READ];
         [self.outgoingSocket readDataWithTimeout:-1 tag:SOCKS_OUTGOING_READ];
+        NSUInteger dataLength = data.length;
+        self.totalBytesRead += dataLength;
+        if (self.delegate && [self.delegate respondsToSelector:@selector(proxySocket:didReadDataOfLength:)]) {
+            dispatch_async(self.callbackQueue, ^{
+                [self.delegate proxySocket:self didReadDataOfLength:dataLength];
+            });
+        }
     }
 }
 
@@ -144,7 +161,9 @@
 
 - (void) socketDidDisconnect:(GCDAsyncSocket *)sock withError:(NSError *)err {
     if (self.delegate && [self.delegate respondsToSelector:@selector(proxySocketDidDisconnect:withError:)]) {
-        [self.delegate proxySocketDidDisconnect:self withError:err];
+        dispatch_async(self.callbackQueue, ^{
+            [self.delegate proxySocketDidDisconnect:self withError:err];
+        });
     }
 }
 

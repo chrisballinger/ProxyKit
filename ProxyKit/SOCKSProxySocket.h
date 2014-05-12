@@ -14,6 +14,8 @@
 @protocol SOCKSProxySocketDelegate <NSObject>
 @optional
 - (void) proxySocketDidDisconnect:(SOCKSProxySocket*)proxySocket withError:(NSError *)error;
+- (void) proxySocket:(SOCKSProxySocket*)proxySocket didReadDataOfLength:(NSUInteger)numBytes;
+- (void) proxySocket:(SOCKSProxySocket*)proxySocket didWriteDataOfLength:(NSUInteger)numBytes;
 @end
 
 @interface SOCKSProxySocket : NSObject <GCDAsyncSocketDelegate>
@@ -21,6 +23,9 @@
 @property (nonatomic, readonly) uint16_t destinationPort;
 @property (nonatomic, strong, readonly) NSString* destinationHost;
 @property (nonatomic, weak) id<SOCKSProxySocketDelegate> delegate;
+@property (nonatomic) dispatch_queue_t callbackQueue;
+@property (nonatomic, readonly) NSUInteger totalBytesWritten;
+@property (nonatomic, readonly) NSUInteger totalBytesRead;
 
 - (id) initWithSocket:(GCDAsyncSocket*)socket delegate:(id<SOCKSProxySocketDelegate>)delegate;
 
