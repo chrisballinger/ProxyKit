@@ -22,6 +22,8 @@ GCDAsyncProxySocket *socket = [[GCDAsyncProxySocket alloc] init];
 [socket connectToHost:@"example.com" onPort:80 error:nil];
 ```
 
+For more documentation check out [ProxyKit on Cocoadocs](http://cocoadocs.org/docsets/ProxyKit).
+
 ### Installation
 
 We use Cocoapods. There are two subspecs for the server and client code. By default both are included. Put one of these your `Podfile`:
@@ -47,6 +49,23 @@ You can run tests by opening up `ProxyKit.xcworkspace` after installing the Pods
 
 * [Tether](https://github.com/chrisballinger/Tether-iOS) - Tethering for non-jailbroken iOS Devices over USB.
 * [ChatSecure](https://github.com/chrisballinger/ChatSecure-iOS) - free and open source encrypted chat client for iPhone and Android that supports OTR encryption over XMPP.
+
+## TODO
+
+* Add SOCKS5 username/password support
+* Get GCDAsyncProxySocket SOCKS code merged upstream into GCDAsyncSocket
+* Better documentation
+* Tests
+
+## Contributing
+
+Thank you for your interest in contributing to ProxyKit! Check out the TODO for things that still need to be done.
+
+1. Fork the project and work in a feature branch.
+2. Ensure that the existing tests are passing and/or write more tests.
+2. Open a pull request on GitHub.
+3. Thank you!
+
 
 ## Author
 
