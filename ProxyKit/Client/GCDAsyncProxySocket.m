@@ -266,7 +266,7 @@
 }
 
 - (void) socket:(GCDAsyncSocket *)sock didReadPartialDataOfLength:(NSUInteger)partialLength tag:(long)tag {
-    DDLogVerbose(@"read partial data with tag %ld of length %d", tag, partialLength);
+    DDLogVerbose(@"read partial data with tag %ld of length %d", tag, (int)partialLength);
     if (self.delegate && [self.delegate respondsToSelector:@selector(socket:didReadPartialDataOfLength:tag:)]) {
         dispatch_async(self.delegateQueue, ^{
             @autoreleasepool {

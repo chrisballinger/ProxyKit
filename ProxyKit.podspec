@@ -1,19 +1,40 @@
 Pod::Spec.new do |s|
   s.name         = "ProxyKit"
-  s.version      = "1.0.1"
+  s.version      = "1.0.2"
   s.summary      = "SOCKS proxy server and socket client built upon GCDAsyncSocket."
   s.homepage     = "https://github.com/chrisballinger/ProxyKit"
   s.license      = { :type => "MIT", :file => "LICENSE" }  
   s.author             = { "Chris Ballinger" => "chrisballinger@gmail.com" }
-  s.social_media_url   = "https://github.com/chrisballinger/"
-  s.platform = :ios, :osx
+  s.social_media_url   = "https://github.com/chrisballinger"
   s.ios.deployment_target = "6.0"
   s.osx.deployment_target = "10.7"
-
-  s.source       = { :git => "https://github.com/chrisballinger/ProxyKit.git", :tag => s.version.to_s }
-
-  s.source_files  = "ProxyKit/*.{h,m}"
   s.requires_arc = true
-  s.dependency 'CocoaAsyncSocket', '~> 7.3'
-  s.dependency 'CocoaLumberjack', '~> 1.8'
+  s.source       = { :git => "https://github.com/chrisballinger/ProxyKit.git", :tag => s.version.to_s }
+  
+  s.default_subspec = 'standard'
+
+  s.subspec 'common' do |ss|
+    ss.dependency 'CocoaAsyncSocket', '~> 7.3'
+    ss.dependency 'CocoaLumberjack', '~> 1.9'
+    ss.requires_arc = true
+  end
+
+  s.subspec 'Server' do |ss|
+    ss.source_files = 'ProxyKit/Server/*.{h,m}'
+    ss.dependency 'ProxyKit/common'
+    ss.requires_arc = true
+  end
+
+  s.subspec 'Client' do |ss|
+    ss.source_files = 'ProxyKit/Client/*.{h,m}'
+    ss.dependency 'ProxyKit/common'
+    ss.requires_arc = true
+  end
+
+  s.subspec 'standard' do |ss|
+    ss.dependency 'ProxyKit/Client'
+    ss.dependency 'ProxyKit/Server'
+    ss.requires_arc = true
+  end
+
 end
