@@ -28,21 +28,20 @@
     return self;
 }
 
-- (void) startProxy {
-    [self startProxyOnPort:9050];
+- (BOOL) startProxy {
+    return [self startProxyOnPort:9050];
 }
 
-- (void) startProxyOnPort:(uint16_t)port {
+- (BOOL) startProxyOnPort:(uint16_t)port {
+    return [self startProxyOnPort:port error:nil];
+}
+
+- (BOOL) startProxyOnPort:(uint16_t)port error:(NSError**)error {
     [self disconnect];
     self.listeningSocket = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:self.listeningQueue];
     self.activeSockets = [NSMutableSet set];
     _listeningPort = port;
-    NSError *error = nil;
-    [self.listeningSocket acceptOnPort:port error:&error];
-    if (error) {
-        NSLog(@"Error listening on port %d: %@", port, error.userInfo);
-    }
-    NSLog(@"Listening on port %d", port);
+    return [self.listeningSocket acceptOnPort:port error:error];
 }
 
 - (void) socket:(GCDAsyncSocket *)sock didAcceptNewSocket:(GCDAsyncSocket *)newSocket {

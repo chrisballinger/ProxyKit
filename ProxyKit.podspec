@@ -14,7 +14,7 @@ Pod::Spec.new do |s|
   s.default_subspec = 'standard'
 
   s.subspec 'common' do |ss|
-    ss.dependency 'CocoaAsyncSocket', '~> 7.3'
+    ss.dependency 'CocoaAsyncSocket', '~> 7.4'
     ss.dependency 'CocoaLumberjack', '~> 1.9'
     ss.requires_arc = true
   end

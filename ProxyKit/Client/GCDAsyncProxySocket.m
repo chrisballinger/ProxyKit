@@ -21,6 +21,7 @@
 #define SOCKS_CONNECT          10200
 #define SOCKS_CONNECT_REPLY_1  10300
 #define SOCKS_CONNECT_REPLY_2  10400
+#define SOCKS_AUTH_USERPASS    10500
 
 // Timeouts
 #define TIMEOUT_CONNECT       8.00
@@ -59,6 +60,7 @@
         _proxyUsername = nil;
         _proxyPassword = nil;
         _proxyDelegateQueue = dispatch_queue_create("GCDAsyncProxySocket delegate queue", 0);
+        
     }
     return self;
 }
@@ -137,7 +139,10 @@
 	uint8_t numMethods = 1; // NMETHODS
 	byteBuffer[1] = numMethods;
 	
-	uint8_t method = 0; // METHODS
+	uint8_t method = 0; // 0 == no auth
+    if (self.proxyUsername.length || self.proxyPassword.length) {
+        method = 2; // username/password
+    }
 	byteBuffer[2] = method;
 	
 	NSData *data = [NSData dataWithBytesNoCopy:byteBuffer length:byteBufferLength freeWhenDone:YES];
@@ -157,6 +162,32 @@
 	// Method  = 0 (No authentication, anonymous access)
 	
 	[self.proxySocket readDataToLength:2 withTimeout:TIMEOUT_READ tag:SOCKS_OPEN];
+}
+
+/*
+ For username/password authentication the client's authentication request is
+ 
+ field 1: version number, 1 byte (must be 0x01)
+ field 2: username length, 1 byte
+ field 3: username
+ field 4: password length, 1 byte
+ field 5: password
+
+ */
+- (void)socksUserPassAuth {
+    NSData *usernameData = [self.proxyUsername dataUsingEncoding:NSUTF8StringEncoding];
+    NSData *passwordData = [self.proxyPassword dataUsingEncoding:NSUTF8StringEncoding];
+    uint8_t usernameLength = (uint8_t)usernameData.length;
+    uint8_t passwordLength = (uint8_t)passwordData.length;
+    NSMutableData *authData = [NSMutableData dataWithCapacity:1+1+usernameLength+1+passwordLength];
+    uint8_t version[1] = {0x01};
+    [authData appendBytes:version length:1];
+    [authData appendBytes:&usernameLength length:1];
+    [authData appendBytes:usernameData.bytes length:usernameLength];
+    [authData appendBytes:&passwordLength length:1];
+    [authData appendBytes:passwordData.bytes length:passwordLength];
+    [self.proxySocket writeData:authData withTimeout:-1 tag:SOCKS_AUTH_USERPASS];
+    [self.proxySocket readDataToLength:2 withTimeout:-1 tag:SOCKS_AUTH_USERPASS];
 }
 
 /**
@@ -286,19 +317,25 @@
         NSAssert(data.length == 2, @"SOCKS_OPEN reply length must be 2!");
 		// See socksOpen method for socks reply format
 		uint8_t *bytes = (uint8_t*)[data bytes];
-		UInt8 ver = bytes[0];
-		UInt8 mtd = bytes[1];
+		uint8_t version = bytes[0];
+		uint8_t method = bytes[1];
 		
-		DDLogVerbose(@"TURNSocket: SOCKS_OPEN: ver(%o) mtd(%o)", ver, mtd);
+		DDLogVerbose(@"TURNSocket: SOCKS_OPEN: ver(%o) mtd(%o)", version, method);
 		
-		if(ver == 5 && mtd == 0)
+		if(version == 5)
 		{
-			[self socksConnect];
+            if (method == 0) { // No Auth
+                [self socksConnect];
+            } else if (method == 2) { // Username / password
+                [self socksUserPassAuth];
+            } else {
+                // unsupported auth method
+                [self.proxySocket disconnect];
+            }
 		}
 		else
 		{
-			// Some kind of error occurred.
-			// The proxy probably requires some kind of authentication.
+			// Wrong version
 			[self.proxySocket disconnect];
 		}
 	}
@@ -405,6 +442,32 @@
             });
         }
 	}
+    else if (tag == SOCKS_AUTH_USERPASS) {
+        /*
+         Server response for username/password authentication:
+         
+         field 1: version, 1 byte
+         field 2: status code, 1 byte.
+         0x00 = success
+         any other value = failure, connection must be closed
+         */
+        DDLogVerbose(@"TURNSocket: SOCKS_AUTH_USERPASS: %@", data);
+        if (data.length == 2) {
+            uint8_t *bytes = (uint8_t*)[data bytes];
+            uint8_t status = bytes[1];
+            if (status == 0x00) {
+                [self socksConnect];
+            } else {
+                DDLogVerbose(@"TURNSocket: Invalid SOCKS username/password auth");
+                [self.proxySocket disconnect];
+                return;
+            }
+        } else {
+            DDLogVerbose(@"TURNSocket: Invalid SOCKS username/password response length");
+            [self.proxySocket disconnect];
+            return;
+        }
+    }
     else {
         if (self.delegate && [self.delegate respondsToSelector:@selector(socket:didReadData:withTag:)]) {
             dispatch_async(self.delegateQueue, ^{

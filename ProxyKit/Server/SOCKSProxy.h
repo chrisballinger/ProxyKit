@@ -47,8 +47,9 @@
 - (void) resetNetworkStatistics;
 
 
-- (void) startProxy; // defaults to port 9050
-- (void) startProxyOnPort:(uint16_t)port;
+- (BOOL) startProxy; // defaults to port 9050
+- (BOOL) startProxyOnPort:(uint16_t)port;
+- (BOOL) startProxyOnPort:(uint16_t)port error:(NSError**)error;
 - (void) disconnect;
 
 @end

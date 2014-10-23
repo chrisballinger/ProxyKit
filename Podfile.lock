@@ -1,16 +1,17 @@
 PODS:
-  - CocoaAsyncSocket (7.3.5)
-  - CocoaLumberjack (1.9.1):
+  - CocoaAsyncSocket (7.4.1)
+  - CocoaLumberjack (1.9.2):
     - CocoaLumberjack/Extensions
-  - CocoaLumberjack/Core (1.9.1)
-  - CocoaLumberjack/Extensions (1.9.1):
+  - CocoaLumberjack/Core (1.9.2)
+  - CocoaLumberjack/Extensions (1.9.2):
     - CocoaLumberjack/Core
+  - Expecta (0.3.1)
   - ProxyKit (1.0.2):
     - ProxyKit/standard
   - ProxyKit/Client (1.0.2):
     - ProxyKit/common
   - ProxyKit/common (1.0.2):
-    - CocoaAsyncSocket (~> 7.3)
+    - CocoaAsyncSocket (~> 7.4)
     - CocoaLumberjack (~> 1.9)
   - ProxyKit/Server (1.0.2):
     - ProxyKit/common
@@ -19,15 +20,21 @@ PODS:
     - ProxyKit/Server
 
 DEPENDENCIES:
+  - CocoaAsyncSocket (from `https://github.com/robbiehanson/CocoaAsyncSocket.git`, commit `c0bbcbcc5e039ca5d732f9844bf95c3d8ee31a5b`)
+  - Expecta (~> 0.3)
   - ProxyKit (from `./ProxyKit.podspec`)
 
 EXTERNAL SOURCES:
+  CocoaAsyncSocket:
+    :commit: c0bbcbcc5e039ca5d732f9844bf95c3d8ee31a5b
+    :git: https://github.com/robbiehanson/CocoaAsyncSocket.git
   ProxyKit:
     :path: ./ProxyKit.podspec
 
 SPEC CHECKSUMS:
-  CocoaAsyncSocket: 45bdbbc1c0a5ed0640ff4c42af325ba43a2f099a
-  CocoaLumberjack: 94accd5749f5c5d15134c8d50f34a973aed8ef69
-  ProxyKit: 3e73f2ad92327554549474ad10da21dde46d3ba8
+  CocoaAsyncSocket: 4bbe8fc969e61e62f408de98faac676468e155b3
+  CocoaLumberjack: 205769c032b5fef85b92472046bcc8b7e7c8a817
+  Expecta: 03aabd0a89d8dea843baecb19a7fd7466a69a31d
+  ProxyKit: 80287b9ec4e672ebf5088b4361bf5ce1e2473679
 
-COCOAPODS: 0.33.1
+COCOAPODS: 0.34.4
