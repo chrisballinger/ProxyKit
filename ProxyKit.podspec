@@ -3,19 +3,19 @@ Pod::Spec.new do |s|
   s.version      = "1.0.2"
   s.summary      = "SOCKS proxy server and socket client built upon GCDAsyncSocket."
   s.homepage     = "https://github.com/chrisballinger/ProxyKit"
-  s.license      = { :type => "MIT", :file => "LICENSE" }  
+  s.license      = { :type => "MIT", :file => "LICENSE" }
   s.author             = { "Chris Ballinger" => "chrisballinger@gmail.com" }
   s.social_media_url   = "https://github.com/chrisballinger"
   s.ios.deployment_target = "6.0"
   s.osx.deployment_target = "10.7"
   s.requires_arc = true
   s.source       = { :git => "https://github.com/chrisballinger/ProxyKit.git", :tag => s.version.to_s }
-  
+
   s.default_subspec = 'standard'
 
   s.subspec 'common' do |ss|
     ss.dependency 'CocoaAsyncSocket', '~> 7.3'
-    ss.dependency 'CocoaLumberjack', '~> 1.9'
+    ss.dependency 'CocoaLumberjack', '~> 2'
     ss.requires_arc = true
   end
 
