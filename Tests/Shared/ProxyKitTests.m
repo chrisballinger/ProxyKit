@@ -7,8 +7,7 @@
 //
 
 #import <XCTest/XCTest.h>
-#import "SOCKSProxy.h"
-#import "GCDAsyncProxySocket.h"
+@import ProxyKit;
 
 @interface ProxyKitTests : XCTestCase
 @end

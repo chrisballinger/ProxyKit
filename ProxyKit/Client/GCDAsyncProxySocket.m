@@ -8,11 +8,11 @@
 
 #import "GCDAsyncProxySocket.h"
 
-#import "DDLog.h"
+@import CocoaLumberjack;
 #if DEBUG
-    static const int ddLogLevel = LOG_LEVEL_VERBOSE;
+    static const int ddLogLevel = DDLogLevelVerbose;
 #else
-    static const int ddLogLevel = LOG_LEVEL_OFF;
+    static const int ddLogLevel = DDLogLevelOff;
 #endif
 
 

@@ -1,0 +1,6 @@
+use_frameworks!
+
+target :ProxyKitTestsiOS do
+    platform :ios, '8.0'
+    pod 'ProxyKit', :path => '../../ProxyKit.podspec'
+end
