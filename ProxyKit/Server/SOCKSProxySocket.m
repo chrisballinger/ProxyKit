@@ -8,6 +8,10 @@
 
 // Define various socket tags
 #define SOCKS_OPEN             10100
+#define SOCKS_CONNECT_AUTH_INIT     10101
+#define SOCKS_CONNECT_AUTH_USERNAME     10102
+#define SOCKS_CONNECT_AUTH_PASSWORD     10103
+
 #define SOCKS_CONNECT_INIT     10200
 #define SOCKS_CONNECT_IPv4     10201
 #define SOCKS_CONNECT_DOMAIN   10202
@@ -54,22 +58,86 @@
 
 - (void) socket:(GCDAsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag {
     if (tag == SOCKS_OPEN) {
-        //      +-----+--------+
-        // NAME | VER | METHOD |
-        //      +-----+--------+
-        // SIZE |  1  |   1    |
-        //      +-----+--------+
-        //
-        // Note: Size is in bytes
-        //
-        // Version = 5 (for SOCKS5)
-        // Method  = 0 (No authentication, anonymous access)
-        NSUInteger responseLength = 2;
-        uint8_t *responseBytes = malloc(responseLength * sizeof(uint8_t));
-        responseBytes[0] = 5; // VER = SOCKS5
-        responseBytes[1] = 0; // METHOD = No Auth
-        NSData *responseData = [NSData dataWithBytesNoCopy:responseBytes length:responseLength freeWhenDone:YES];
-        [sock writeData:responseData withTimeout:-1 tag:SOCKS_OPEN];
+        /*
+         The initial greeting from the client is
+         
+         field 1: SOCKS version number (must be 0x05 for this version)
+         field 2: number of authentication methods supported, 1 byte
+         field 3: authentication methods, variable length, 1 byte per method supported
+         */
+        if (data.length >= 3) {
+            uint8_t *bytes = (uint8_t*)data.bytes;
+            //uint8_t version = bytes[0];
+            //uint8_t methodsLength = bytes[1];
+            // We only bother checking the first supported method
+            uint8_t firstSupportedMethod = bytes[2];
+            uint8_t supportedMethod = 0x00;
+            if (firstSupportedMethod == 0x02) { // Password auth
+                supportedMethod = firstSupportedMethod;
+            }
+            //      +-----+--------+
+            // NAME | VER | METHOD |
+            //      +-----+--------+
+            // SIZE |  1  |   1    |
+            //      +-----+--------+
+            //
+            // Note: Size is in bytes
+            //
+            // Version = 5 (for SOCKS5)
+            // Method  = 0 (No authentication, anonymous access)
+            NSUInteger responseLength = 2;
+            uint8_t *responseBytes = malloc(responseLength * sizeof(uint8_t));
+            responseBytes[0] = 5; // VER = SOCKS5
+            responseBytes[1] = supportedMethod;
+            NSData *responseData = [NSData dataWithBytesNoCopy:responseBytes length:responseLength freeWhenDone:YES];
+            [sock writeData:responseData withTimeout:-1 tag:SOCKS_OPEN];
+            if (supportedMethod == 0x00) {
+                [sock readDataToLength:4 withTimeout:TIMEOUT_CONNECT tag:SOCKS_CONNECT_INIT];
+            } else if (supportedMethod == 0x02) {
+                // read first 2 bytes of socks auth
+                [sock readDataToLength:2 withTimeout:-1 tag:SOCKS_CONNECT_AUTH_INIT];
+            }
+        }
+    } else if (tag == SOCKS_CONNECT_AUTH_INIT) {
+        // We don't actually bother checking user/pass
+        /*
+         For username/password authentication the client's authentication request is
+         
+         field 1: version number, 1 byte (must be 0x01)
+         field 2: username length, 1 byte
+         field 3: username
+         field 4: password length, 1 byte
+         field 5: password
+         Server response for username/password authentication:
+         
+         field 1: version, 1 byte
+         field 2: status code, 1 byte.
+         0x00 = success
+         any other value = failure, connection must be closed
+         */
+        if (data.length == 2) {
+            uint8_t *bytes = (uint8_t*)data.bytes;
+            uint8_t version = bytes[0];
+            uint8_t usernameLength = bytes[1];
+            [sock readDataToLength:usernameLength+1 withTimeout:-1 tag:SOCKS_CONNECT_AUTH_USERNAME];
+        }
+    } else if (tag == SOCKS_CONNECT_AUTH_USERNAME) {
+        if (data.length >= 2) {
+            NSData *usernameData = [data subdataWithRange:NSMakeRange(0, data.length - 1)];
+            NSString *usernameString = [[NSString alloc] initWithData:usernameData encoding:NSUTF8StringEncoding];
+            NSData *passwordLengthData = [data subdataWithRange:NSMakeRange(data.length - 2, 1)];
+            if (passwordLengthData.length == 1) {
+                uint8_t *passwordLengthBytes = (uint8_t*)passwordLengthData.bytes;
+                uint8_t passwordLength = passwordLengthBytes[0];
+                [sock readDataToLength:passwordLength withTimeout:-1 tag:SOCKS_CONNECT_AUTH_PASSWORD];
+            }
+        }
+    } else if (tag == SOCKS_CONNECT_AUTH_PASSWORD) {
+        NSString *passwordString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+        // Accept any username / password
+        uint8_t success[2] = {0x01, 0x00};
+        NSData* successData = [NSData dataWithBytes:&success length:2];
+        [sock writeData:successData withTimeout:-1 tag:SOCKS_CONNECT_INIT];
         [sock readDataToLength:4 withTimeout:TIMEOUT_CONNECT tag:SOCKS_CONNECT_INIT];
     } else if (tag == SOCKS_CONNECT_INIT) {
         //      +-----+-----+-----+------+------+------+
