@@ -30,6 +30,12 @@
 #define TIMEOUT_TOTAL        80.00
 
 #import "SOCKSProxySocket.h"
+@import CocoaLumberjack;
+#if DEBUG
+static const int ddLogLevel = DDLogLevelVerbose;
+#else
+static const int ddLogLevel = DDLogLevelOff;
+#endif
 #include <arpa/inet.h>
 
 @interface SOCKSProxySocket()
@@ -38,6 +44,7 @@
 @property (nonatomic) dispatch_queue_t delegateQueue;
 @property (nonatomic) NSUInteger totalBytesWritten;
 @property (nonatomic) NSUInteger totalBytesRead;
+@property (nonatomic, strong) NSString *username;
 @end
 
 @implementation SOCKSProxySocket
@@ -119,26 +126,38 @@
             uint8_t *bytes = (uint8_t*)data.bytes;
             uint8_t version = bytes[0];
             uint8_t usernameLength = bytes[1];
+            DDLogVerbose(@"AUTH version %d. Reading username...", version);
             [sock readDataToLength:usernameLength+1 withTimeout:-1 tag:SOCKS_CONNECT_AUTH_USERNAME];
         }
     } else if (tag == SOCKS_CONNECT_AUTH_USERNAME) {
         if (data.length >= 2) {
             NSData *usernameData = [data subdataWithRange:NSMakeRange(0, data.length - 1)];
             NSString *usernameString = [[NSString alloc] initWithData:usernameData encoding:NSUTF8StringEncoding];
-            NSData *passwordLengthData = [data subdataWithRange:NSMakeRange(data.length - 2, 1)];
+            self.username = usernameString;
+            DDLogVerbose(@"AUTH username %@", usernameString);
+            NSData *passwordLengthData = [data subdataWithRange:NSMakeRange(data.length - 1, 1)];
             if (passwordLengthData.length == 1) {
                 uint8_t *passwordLengthBytes = (uint8_t*)passwordLengthData.bytes;
                 uint8_t passwordLength = passwordLengthBytes[0];
+                DDLogVerbose(@"Reading password of length %d...", passwordLength);
                 [sock readDataToLength:passwordLength withTimeout:-1 tag:SOCKS_CONNECT_AUTH_PASSWORD];
             }
         }
     } else if (tag == SOCKS_CONNECT_AUTH_PASSWORD) {
         NSString *passwordString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-        // Accept any username / password
         uint8_t success[2] = {0x01, 0x00};
-        NSData* successData = [NSData dataWithBytes:&success length:2];
-        [sock writeData:successData withTimeout:-1 tag:SOCKS_CONNECT_INIT];
-        [sock readDataToLength:4 withTimeout:TIMEOUT_CONNECT tag:SOCKS_CONNECT_INIT];
+        uint8_t failure[2] = {0x01, 0x00};
+        NSData* responseData = nil;
+        if ([self.delegate proxySocket:self checkAuthorizationForUser:self.username password:passwordString]) {
+            responseData = [NSData dataWithBytes:&success length:2];
+            [sock writeData:responseData withTimeout:-1 tag:SOCKS_CONNECT_INIT];
+            [sock readDataToLength:4 withTimeout:TIMEOUT_CONNECT tag:SOCKS_CONNECT_INIT];
+        } else {
+            responseData = [NSData dataWithBytes:&failure length:2];
+            [sock writeData:responseData withTimeout:-1 tag:SOCKS_CONNECT_INIT];
+            [sock disconnectAfterWriting];
+        }
+        self.username = nil;
     } else if (tag == SOCKS_CONNECT_INIT) {
         //      +-----+-----+-----+------+------+------+
         // NAME | VER | CMD | RSV | ATYP | ADDR | PORT |

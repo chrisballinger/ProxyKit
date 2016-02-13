@@ -15,6 +15,7 @@
 @property (nonatomic, strong) NSMutableSet *activeSockets;
 @property (nonatomic) NSUInteger totalBytesWritten;
 @property (nonatomic) NSUInteger totalBytesRead;
+@property (nonatomic, strong) NSMutableDictionary *authorizedUsers;
 
 @end
 
@@ -24,6 +25,7 @@
     if (self = [super init]) {
         self.listeningQueue = dispatch_queue_create("SOCKS delegate queue", 0);
         self.callbackQueue = dispatch_get_main_queue();
+        self.authorizedUsers = [NSMutableDictionary dictionary];
     }
     return self;
 }
@@ -42,6 +44,26 @@
     self.activeSockets = [NSMutableSet set];
     _listeningPort = port;
     return [self.listeningSocket acceptOnPort:port error:error];
+}
+
+// SOCKS authorization
+// btw this is horribly insecure, especially over the open internet
+- (void) addAuthorizedUser:(NSString*)username password:(NSString*)password {
+    [self.authorizedUsers setObject:password forKey:username];
+}
+- (void) removeAuthorizedUser:(NSString*)username {
+    [self.authorizedUsers removeObjectForKey:username];
+}
+- (void) removeAllAuthorizedUsers {
+    [self.authorizedUsers removeAllObjects];
+}
+
+- (BOOL) checkAuthorizationForUser:(NSString*)username password:(NSString*)password {
+    NSString *existingPassword = [self.authorizedUsers objectForKey:username];
+    if (!existingPassword.length) {
+        return NO;
+    }
+    return [existingPassword isEqualToString:password];
 }
 
 - (void) socket:(GCDAsyncSocket *)sock didAcceptNewSocket:(GCDAsyncSocket *)newSocket {
@@ -94,6 +116,12 @@
 
 - (void) proxySocket:(SOCKSProxySocket *)proxySocket didWriteDataOfLength:(NSUInteger)numBytes {
     self.totalBytesWritten += numBytes;
+}
+
+- (BOOL) proxySocket:(SOCKSProxySocket*)proxySocket
+checkAuthorizationForUser:(NSString*)username
+            password:(NSString*)password {
+    return [self checkAuthorizationForUser:username password:password];
 }
 
 - (void) resetNetworkStatistics {

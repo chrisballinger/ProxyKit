@@ -16,6 +16,9 @@
 - (void) proxySocketDidDisconnect:(SOCKSProxySocket*)proxySocket withError:(NSError *)error;
 - (void) proxySocket:(SOCKSProxySocket*)proxySocket didReadDataOfLength:(NSUInteger)numBytes;
 - (void) proxySocket:(SOCKSProxySocket*)proxySocket didWriteDataOfLength:(NSUInteger)numBytes;
+- (BOOL) proxySocket:(SOCKSProxySocket*)proxySocket
+checkAuthorizationForUser:(NSString*)username
+            password:(NSString*)password;
 @end
 
 @interface SOCKSProxySocket : NSObject <GCDAsyncSocketDelegate>

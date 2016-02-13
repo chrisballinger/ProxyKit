@@ -6,15 +6,18 @@
 //  Copyright (c) 2014 Christopher Ballinger. All rights reserved.
 //
 
-#import <XCTest/XCTest.h>
-@import ProxyKit;
-
-#define EXP_SHORTHAND YES
-#import "Expecta.h"
+@import XCTest;
+#import "GCDAsyncProxySocket.h"
+#import "SOCKSProxy.h"
+@import CocoaLumberjack;
+@import CocoaAsyncSocket;
 
 @interface ProxyKitTests : XCTestCase <GCDAsyncSocketDelegate, SOCKSProxyDelegate>
-@property (nonatomic) BOOL didConnect;
-@property (nonatomic) BOOL didRead;
+@property (nonatomic, strong) XCTestExpectation *didConnect;
+@property (nonatomic, strong) XCTestExpectation *didRead;
+
+@property (nonatomic, strong) SOCKSProxy *proxy;
+@property (nonatomic, strong) GCDAsyncProxySocket *clientSocket;
 @end
 
 @implementation ProxyKitTests
@@ -22,12 +25,13 @@
 - (void)setUp
 {
     [super setUp];
-    [Expecta setAsynchronousTestTimeout:60];
+    [DDLog addLogger:[DDTTYLogger sharedInstance]];
 }
 
 - (void)tearDown
 {
     // Put teardown code here. This method is called after the invocation of each test method in the class.
+    [DDLog removeAllLoggers];
     [super tearDown];
 }
 
@@ -40,19 +44,50 @@
     XCTAssertTrue(success, @"connectToHost:onPort:error: failed: %@", error);
 }
 
+- (void) testNoAuth {
+    NSError *error = nil;
+    self.proxy = [[SOCKSProxy alloc] init];
+    self.proxy.delegate = self;
+    self.proxy.callbackQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+    BOOL success = [self.proxy startProxyOnPort:9050 error:&error];
+    XCTAssertTrue(success, @"could not start proxy: %@", error);
+    self.clientSocket = [[GCDAsyncProxySocket alloc] initWithDelegate:self delegateQueue:dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)];
+    [self.clientSocket setProxyHost:@"127.0.0.1" port:9050 version:GCDAsyncSocketSOCKSVersion5];
+    error = nil;
+    success = [self.clientSocket connectToHost:@"example.com" onPort:80 error:&error];
+    XCTAssertTrue(success, @"connectToHost:onPort:error: failed: %@", error);
+    self.didConnect = [self expectationWithDescription:@"Did Connect"];
+    self.didRead = [self expectationWithDescription:@"Did Read"];
+    [self waitForExpectationsWithTimeout:30 handler:^(NSError * _Nullable error) {
+        if (error) {
+            NSLog(@"%@",error);
+        }
+    }];
+}
+
 - (void) testUsernamePasswordAuth {
     NSError *error = nil;
-    SOCKSProxy *proxy = [[SOCKSProxy alloc] init];
-    BOOL success = [proxy startProxyOnPort:9050 error:&error];
+    self.proxy = [[SOCKSProxy alloc] init];
+    self.proxy.delegate = self;
+    self.proxy.callbackQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+    NSString *username = @"username";
+    NSString *password = @"passsword";
+    BOOL success = [self.proxy startProxyOnPort:9050 error:&error];
+    [self.proxy addAuthorizedUser:username password:password];
     XCTAssertTrue(success, @"could not start proxy: %@", error);
-    GCDAsyncProxySocket *socket = [[GCDAsyncProxySocket alloc] initWithDelegate:self delegateQueue:dispatch_get_main_queue()];
-    [socket setProxyHost:@"127.0.0.1" port:9050 version:GCDAsyncSocketSOCKSVersion5];
-    [socket setProxyUsername:@"username" password:@"password"];
+    self.clientSocket = [[GCDAsyncProxySocket alloc] initWithDelegate:self delegateQueue:dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)];
+    [self.clientSocket setProxyHost:@"127.0.0.1" port:9050 version:GCDAsyncSocketSOCKSVersion5];
+    [self.clientSocket setProxyUsername:username password:password];
     error = nil;
-    success = [socket connectToHost:@"example.com" onPort:80 error:&error];
+    success = [self.clientSocket connectToHost:@"example.com" onPort:80 error:&error];
     XCTAssertTrue(success, @"connectToHost:onPort:error: failed: %@", error);
-    expect(_didConnect).willNot.equal(NO);
-    expect(_didRead).willNot.equal(NO);
+    self.didConnect = [self expectationWithDescription:@"Did Connect"];
+    self.didRead = [self expectationWithDescription:@"Did Read"];
+    [self waitForExpectationsWithTimeout:30 handler:^(NSError * _Nullable error) {
+        if (error) {
+            NSLog(@"%@",error);
+        }
+    }];
 }
 
 - (void) socksProxy:(SOCKSProxy*)socksProxy clientDidConnect:(SOCKSProxySocket*)clientSocket {
@@ -65,14 +100,21 @@
 
 - (void)socket:(GCDAsyncSocket *)sock didConnectToHost:(NSString *)host port:(uint16_t)port {
     NSLog(@"didConnectToHost (%d): %@", port, host);
-    self.didConnect = YES;
-    [sock readDataWithTimeout:-1 tag:314159];
-
+    [self.didConnect fulfill];
+    NSString * getRequest = @"GET / HTTP/1.0\r\n\r\n";
+    NSData *data = [getRequest dataUsingEncoding:NSUTF8StringEncoding];
+    [self.clientSocket writeData:data withTimeout:-1 tag:111222];
 }
 
 - (void)socket:(GCDAsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag {
     NSLog(@"didReadData (%ld): %@", tag, data);
-    self.didRead = YES;
+    [self.didRead fulfill];
+}
+
+- (void)socket:(GCDAsyncSocket *)sock didWriteDataWithTag:(long)tag {
+    if (tag == 111222) {
+        [self.clientSocket readDataWithTimeout:-1 tag:314159];
+    }
 }
 
 @end
