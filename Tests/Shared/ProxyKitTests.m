@@ -32,6 +32,9 @@
 {
     // Put teardown code here. This method is called after the invocation of each test method in the class.
     [DDLog removeAllLoggers];
+    if (self.proxy) {
+        [self.proxy disconnect];
+    }
     [super tearDown];
 }
 
@@ -58,7 +61,7 @@
     XCTAssertTrue(success, @"connectToHost:onPort:error: failed: %@", error);
     self.didConnect = [self expectationWithDescription:@"Did Connect"];
     self.didRead = [self expectationWithDescription:@"Did Read"];
-    [self waitForExpectationsWithTimeout:30 handler:^(NSError * _Nullable error) {
+    [self waitForExpectationsWithTimeout:10 handler:^(NSError * _Nullable error) {
         if (error) {
             NSLog(@"%@",error);
         }
@@ -83,7 +86,7 @@
     XCTAssertTrue(success, @"connectToHost:onPort:error: failed: %@", error);
     self.didConnect = [self expectationWithDescription:@"Did Connect"];
     self.didRead = [self expectationWithDescription:@"Did Read"];
-    [self waitForExpectationsWithTimeout:30 handler:^(NSError * _Nullable error) {
+    [self waitForExpectationsWithTimeout:10 handler:^(NSError * _Nullable error) {
         if (error) {
             NSLog(@"%@",error);
         }

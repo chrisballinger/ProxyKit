@@ -21,6 +21,10 @@
 
 @implementation SOCKSProxy
 
+- (void) dealloc {
+    [self disconnect];
+}
+
 - (id) init {
     if (self = [super init]) {
         self.listeningQueue = dispatch_queue_create("SOCKS delegate queue", 0);

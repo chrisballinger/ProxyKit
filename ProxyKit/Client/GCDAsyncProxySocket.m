@@ -79,9 +79,17 @@
     return [self.proxySocket connectToHost:self.proxyHost onPort:self.proxyPort viaInterface:inInterface withTimeout:timeout error:errPtr];
 }
 
+/** Returns YES if tag is reserved for internal functions */
+- (BOOL) checkForReservedTag:(long)tag {
+    if (tag == SOCKS_OPEN || tag == SOCKS_CONNECT || tag == SOCKS_CONNECT_REPLY_1 || tag == SOCKS_CONNECT_REPLY_2 || tag == SOCKS_AUTH_USERPASS) {
+        return YES;
+    } else {
+        return NO;
+    }
+}
+
 - (void) writeData:(NSData *)data withTimeout:(NSTimeInterval)timeout tag:(long)tag {
-    // TODO remove this for performance
-    if (tag == SOCKS_OPEN || tag == SOCKS_CONNECT || tag == SOCKS_CONNECT_REPLY_1 || tag == SOCKS_CONNECT_REPLY_2) {
+    if ([self checkForReservedTag:tag]) {
         DDLogError(@"This tag is reserved and won't work: %ld", tag);
         return;
     }
@@ -89,63 +97,63 @@
 }
 
 - (void)readDataWithTimeout:(NSTimeInterval)timeout buffer:(NSMutableData *)buffer bufferOffset:(NSUInteger)offset tag:(long)tag {
-    if (tag == SOCKS_OPEN || tag == SOCKS_CONNECT || tag == SOCKS_CONNECT_REPLY_1 || tag == SOCKS_CONNECT_REPLY_2) {
+    if ([self checkForReservedTag:tag]) {
         DDLogError(@"This tag is reserved and won't work: %ld", tag);
         return;
     }
     [self.proxySocket readDataWithTimeout:timeout buffer:buffer bufferOffset:offset tag:tag];
 }
 - (void)readDataWithTimeout:(NSTimeInterval)timeout buffer:(NSMutableData *)buffer bufferOffset:(NSUInteger)offset maxLength:(NSUInteger)length tag:(long)tag {
-    if (tag == SOCKS_OPEN || tag == SOCKS_CONNECT || tag == SOCKS_CONNECT_REPLY_1 || tag == SOCKS_CONNECT_REPLY_2) {
+    if ([self checkForReservedTag:tag]) {
         DDLogError(@"This tag is reserved and won't work: %ld", tag);
         return;
     }
     [self.proxySocket readDataWithTimeout:timeout buffer:buffer bufferOffset:offset maxLength:length tag:tag];
 }
 - (void) readDataWithTimeout:(NSTimeInterval)timeout tag:(long)tag {
-    if (tag == SOCKS_OPEN || tag == SOCKS_CONNECT || tag == SOCKS_CONNECT_REPLY_1 || tag == SOCKS_CONNECT_REPLY_2) {
+    if ([self checkForReservedTag:tag]) {
         DDLogError(@"This tag is reserved and won't work: %ld", tag);
         return;
     }
     [self.proxySocket readDataWithTimeout:timeout tag:tag];
 }
 - (void)readDataToLength:(NSUInteger)length withTimeout:(NSTimeInterval)timeout tag:(long)tag {
-    if (tag == SOCKS_OPEN || tag == SOCKS_CONNECT || tag == SOCKS_CONNECT_REPLY_1 || tag == SOCKS_CONNECT_REPLY_2) {
+    if ([self checkForReservedTag:tag]) {
         DDLogError(@"This tag is reserved and won't work: %ld", tag);
         return;
     }
     [self.proxySocket readDataToLength:length withTimeout:timeout tag:tag];
 }
 - (void)readDataToLength:(NSUInteger)length withTimeout:(NSTimeInterval)timeout buffer:(NSMutableData *)buffer bufferOffset:(NSUInteger)offset tag:(long)tag {
-    if (tag == SOCKS_OPEN || tag == SOCKS_CONNECT || tag == SOCKS_CONNECT_REPLY_1 || tag == SOCKS_CONNECT_REPLY_2) {
+    if ([self checkForReservedTag:tag]) {
         DDLogError(@"This tag is reserved and won't work: %ld", tag);
         return;
     }
     [self.proxySocket readDataToLength:length withTimeout:timeout buffer:buffer bufferOffset:offset tag:tag];
 }
 - (void)readDataToData:(NSData *)data withTimeout:(NSTimeInterval)timeout tag:(long)tag {
-    if (tag == SOCKS_OPEN || tag == SOCKS_CONNECT || tag == SOCKS_CONNECT_REPLY_1 || tag == SOCKS_CONNECT_REPLY_2) {
+    if ([self checkForReservedTag:tag]) {
         DDLogError(@"This tag is reserved and won't work: %ld", tag);
         return;
     }
     [self.proxySocket readDataToData:data withTimeout:timeout tag:tag];
 }
 - (void)readDataToData:(NSData *)data withTimeout:(NSTimeInterval)timeout buffer:(NSMutableData *)buffer bufferOffset:(NSUInteger)offset tag:(long)tag {
-    if (tag == SOCKS_OPEN || tag == SOCKS_CONNECT || tag == SOCKS_CONNECT_REPLY_1 || tag == SOCKS_CONNECT_REPLY_2) {
+    if ([self checkForReservedTag:tag]) {
         DDLogError(@"This tag is reserved and won't work: %ld", tag);
         return;
     }
     [self.proxySocket readDataToData:data withTimeout:timeout buffer:buffer bufferOffset:offset tag:tag];
 }
 - (void)readDataToData:(NSData *)data withTimeout:(NSTimeInterval)timeout maxLength:(NSUInteger)length tag:(long)tag {
-    if (tag == SOCKS_OPEN || tag == SOCKS_CONNECT || tag == SOCKS_CONNECT_REPLY_1 || tag == SOCKS_CONNECT_REPLY_2) {
+    if ([self checkForReservedTag:tag]) {
         DDLogError(@"This tag is reserved and won't work: %ld", tag);
         return;
     }
     [self.proxySocket readDataToData:data withTimeout:timeout maxLength:length tag:tag];
 }
 - (void)readDataToData:(NSData *)data withTimeout:(NSTimeInterval)timeout buffer:(NSMutableData *)buffer bufferOffset:(NSUInteger)offset maxLength:(NSUInteger)length tag:(long)tag {
-    if (tag == SOCKS_OPEN || tag == SOCKS_CONNECT || tag == SOCKS_CONNECT_REPLY_1 || tag == SOCKS_CONNECT_REPLY_2) {
+    if ([self checkForReservedTag:tag]) {
         DDLogError(@"This tag is reserved and won't work: %ld", tag);
         return;
     }
