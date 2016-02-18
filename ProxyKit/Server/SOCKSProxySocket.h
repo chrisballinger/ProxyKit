@@ -30,6 +30,8 @@ checkAuthorizationForUser:(NSString*)username
 @property (nonatomic, readonly) NSUInteger totalBytesWritten;
 @property (nonatomic, readonly) NSUInteger totalBytesRead;
 
+- (void) disconnect;
+
 - (id) initWithSocket:(GCDAsyncSocket*)socket delegate:(id<SOCKSProxySocketDelegate>)delegate;
 
 @end

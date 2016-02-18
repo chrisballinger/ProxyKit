@@ -73,7 +73,7 @@
     self.proxy.delegate = self;
     self.proxy.callbackQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     NSString *username = @"username";
-    NSString *password = @"passsword";
+    NSString *password = @"password";
     BOOL success = [self.proxy startProxyOnPort:9050 error:&error];
     [self.proxy addAuthorizedUser:username password:password];
     XCTAssertTrue(success, @"could not start proxy: %@", error);

@@ -49,6 +49,10 @@ static const int ddLogLevel = DDLogLevelOff;
 
 @implementation SOCKSProxySocket
 
+- (void) dealloc {
+    [self disconnect];
+}
+
 - (id) initWithSocket:(GCDAsyncSocket *)socket delegate:(id<SOCKSProxySocketDelegate>)delegate {
     if (self = [super init]) {
         _delegate = delegate;
@@ -61,6 +65,13 @@ static const int ddLogLevel = DDLogLevelOff;
         [self socksOpen];
     }
     return self;
+}
+
+- (void) disconnect {
+    [self.proxySocket disconnect];
+    [self.outgoingSocket disconnect];
+    self.proxySocket = nil;
+    self.outgoingSocket = nil;
 }
 
 - (void) socket:(GCDAsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag {
@@ -261,17 +272,18 @@ static const int ddLogLevel = DDLogLevelOff;
     // 2: rsv  = 0
     // 3: atyp = 3
     // 4: size = size of addr field
-    NSUInteger responseLength = 5 + host.length + 2;
+    NSUInteger hostLength = [host lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
+    NSUInteger responseLength = 5 + hostLength + 2;
     uint8_t *responseBytes = malloc(responseLength * sizeof(uint8_t));
     responseBytes[0] = 5;
     responseBytes[1] = 0;
     responseBytes[2] = 0;
     responseBytes[3] = 3;
-    responseBytes[4] = (uint8_t)host.length;
-    memcpy(responseBytes+5, [host UTF8String], host.length);
+    responseBytes[4] = (uint8_t)hostLength;
+    memcpy(responseBytes+5, [host UTF8String], hostLength);
     uint16_t bigEndianPort = NSSwapHostShortToBig(port);
     NSUInteger portLength = 2;
-	memcpy(responseBytes+5+host.length, &bigEndianPort, portLength);
+	memcpy(responseBytes+5+hostLength, &bigEndianPort, portLength);
     NSData *responseData = [NSData dataWithBytesNoCopy:responseBytes length:responseLength freeWhenDone:YES];
     [self.proxySocket writeData:responseData withTimeout:-1 tag:SOCKS_CONNECT_REPLY];
     [self.proxySocket readDataWithTimeout:-1 tag:SOCKS_INCOMING_READ];

@@ -97,6 +97,9 @@
 }
 
 - (void) disconnect {
+    [self.activeSockets enumerateObjectsUsingBlock:^(SOCKSProxySocket *proxySocket, BOOL * _Nonnull stop) {
+        [proxySocket disconnect];
+    }];
     self.activeSockets = nil;
     [self.listeningSocket disconnect];
     self.listeningSocket.delegate = nil;
