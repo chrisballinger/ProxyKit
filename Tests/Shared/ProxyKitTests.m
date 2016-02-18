@@ -7,8 +7,7 @@
 //
 
 @import XCTest;
-#import "GCDAsyncProxySocket.h"
-#import "SOCKSProxy.h"
+@import ProxyKit;
 @import CocoaLumberjack;
 @import CocoaAsyncSocket;
 
