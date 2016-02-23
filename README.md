@@ -52,10 +52,8 @@ You can run tests by opening up `ProxyKit.xcworkspace` after installing the Pods
 
 ## TODO
 
-* Add SOCKS5 username/password support
-* Get GCDAsyncProxySocket SOCKS code merged upstream into GCDAsyncSocket
 * Better documentation
-* Tests
+* More tests
 
 ## Contributing
 
