@@ -6,7 +6,7 @@
 //  Copyright (c) 2013 ChatSecure. All rights reserved.
 //
 
-#import "GCDAsyncSocket.h"
+@import CocoaAsyncSocket;
 
 typedef NS_ENUM(int16_t, GCDAsyncSocketSOCKSVersion) {
     GCDAsyncSocketSOCKSVersion4 = 0,    // Not implemented

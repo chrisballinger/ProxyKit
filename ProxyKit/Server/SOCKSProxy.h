@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "GCDAsyncSocket.h"
+@import CocoaAsyncSocket;
 #import "SOCKSProxySocket.h"
 
 @class SOCKSProxy;
@@ -47,8 +47,17 @@
 - (void) resetNetworkStatistics;
 
 
-- (void) startProxy; // defaults to port 9050
-- (void) startProxyOnPort:(uint16_t)port;
+- (BOOL) startProxy; // defaults to port 9050
+- (BOOL) startProxyOnPort:(uint16_t)port;
+- (BOOL) startProxyOnPort:(uint16_t)port error:(NSError**)error;
 - (void) disconnect;
+
+
+// SOCKS authorization
+// btw this is horribly insecure, especially over the open internet
+- (void) addAuthorizedUser:(NSString*)username password:(NSString*)password;
+- (void) removeAuthorizedUser:(NSString*)username;
+- (void) removeAllAuthorizedUsers;
+- (BOOL) checkAuthorizationForUser:(NSString*)username password:(NSString*)password;
 
 @end

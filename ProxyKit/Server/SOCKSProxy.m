@@ -15,34 +15,59 @@
 @property (nonatomic, strong) NSMutableSet *activeSockets;
 @property (nonatomic) NSUInteger totalBytesWritten;
 @property (nonatomic) NSUInteger totalBytesRead;
+@property (nonatomic, strong) NSMutableDictionary *authorizedUsers;
 
 @end
 
 @implementation SOCKSProxy
 
+- (void) dealloc {
+    [self disconnect];
+}
+
 - (id) init {
     if (self = [super init]) {
         self.listeningQueue = dispatch_queue_create("SOCKS delegate queue", 0);
         self.callbackQueue = dispatch_get_main_queue();
+        self.authorizedUsers = [NSMutableDictionary dictionary];
     }
     return self;
 }
 
-- (void) startProxy {
-    [self startProxyOnPort:9050];
+- (BOOL) startProxy {
+    return [self startProxyOnPort:9050];
 }
 
-- (void) startProxyOnPort:(uint16_t)port {
+- (BOOL) startProxyOnPort:(uint16_t)port {
+    return [self startProxyOnPort:port error:nil];
+}
+
+- (BOOL) startProxyOnPort:(uint16_t)port error:(NSError**)error {
     [self disconnect];
     self.listeningSocket = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:self.listeningQueue];
     self.activeSockets = [NSMutableSet set];
     _listeningPort = port;
-    NSError *error = nil;
-    [self.listeningSocket acceptOnPort:port error:&error];
-    if (error) {
-        NSLog(@"Error listening on port %d: %@", port, error.userInfo);
+    return [self.listeningSocket acceptOnPort:port error:error];
+}
+
+// SOCKS authorization
+// btw this is horribly insecure, especially over the open internet
+- (void) addAuthorizedUser:(NSString*)username password:(NSString*)password {
+    [self.authorizedUsers setObject:password forKey:username];
+}
+- (void) removeAuthorizedUser:(NSString*)username {
+    [self.authorizedUsers removeObjectForKey:username];
+}
+- (void) removeAllAuthorizedUsers {
+    [self.authorizedUsers removeAllObjects];
+}
+
+- (BOOL) checkAuthorizationForUser:(NSString*)username password:(NSString*)password {
+    NSString *existingPassword = [self.authorizedUsers objectForKey:username];
+    if (!existingPassword.length) {
+        return NO;
     }
-    NSLog(@"Listening on port %d", port);
+    return [existingPassword isEqualToString:password];
 }
 
 - (void) socket:(GCDAsyncSocket *)sock didAcceptNewSocket:(GCDAsyncSocket *)newSocket {
@@ -72,6 +97,9 @@
 }
 
 - (void) disconnect {
+    [self.activeSockets enumerateObjectsUsingBlock:^(SOCKSProxySocket *proxySocket, BOOL * _Nonnull stop) {
+        [proxySocket disconnect];
+    }];
     self.activeSockets = nil;
     [self.listeningSocket disconnect];
     self.listeningSocket.delegate = nil;
@@ -95,6 +123,12 @@
 
 - (void) proxySocket:(SOCKSProxySocket *)proxySocket didWriteDataOfLength:(NSUInteger)numBytes {
     self.totalBytesWritten += numBytes;
+}
+
+- (BOOL) proxySocket:(SOCKSProxySocket*)proxySocket
+checkAuthorizationForUser:(NSString*)username
+            password:(NSString*)password {
+    return [self checkAuthorizationForUser:username password:password];
 }
 
 - (void) resetNetworkStatistics {

@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "GCDAsyncSocket.h"
+@import CocoaAsyncSocket;
 
 @class SOCKSProxySocket;
 
@@ -16,6 +16,9 @@
 - (void) proxySocketDidDisconnect:(SOCKSProxySocket*)proxySocket withError:(NSError *)error;
 - (void) proxySocket:(SOCKSProxySocket*)proxySocket didReadDataOfLength:(NSUInteger)numBytes;
 - (void) proxySocket:(SOCKSProxySocket*)proxySocket didWriteDataOfLength:(NSUInteger)numBytes;
+- (BOOL) proxySocket:(SOCKSProxySocket*)proxySocket
+checkAuthorizationForUser:(NSString*)username
+            password:(NSString*)password;
 @end
 
 @interface SOCKSProxySocket : NSObject <GCDAsyncSocketDelegate>
@@ -26,6 +29,8 @@
 @property (nonatomic) dispatch_queue_t callbackQueue;
 @property (nonatomic, readonly) NSUInteger totalBytesWritten;
 @property (nonatomic, readonly) NSUInteger totalBytesRead;
+
+- (void) disconnect;
 
 - (id) initWithSocket:(GCDAsyncSocket*)socket delegate:(id<SOCKSProxySocketDelegate>)delegate;
 
