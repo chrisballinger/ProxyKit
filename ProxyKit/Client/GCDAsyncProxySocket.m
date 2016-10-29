@@ -366,7 +366,7 @@
 
 - (void) socket:(GCDAsyncSocket *)sock didReadPartialDataOfLength:(NSUInteger)partialLength tag:(long)tag {
     DDLogVerbose(@"read partial data with tag %ld of length %d", tag, (int)partialLength);
-    if (self.delegate && [self.delegate respondsToSelector:@selector(socket:didReadPartialDataOfLength:tag:)]) {
+    if (self.delegate && [(NSObject *)self.delegate respondsToSelector:@selector(socket:didReadPartialDataOfLength:tag:)]) {
         dispatch_async(self.delegateQueue, ^{
             @autoreleasepool {
                 [self.delegate socket:self didReadPartialDataOfLength:partialLength tag:tag];
@@ -502,7 +502,7 @@
 		
 		DDLogVerbose(@"TURNSocket: SOCKS_CONNECT_REPLY_2: %@", data);
 		
-        if (self.delegate && [self.delegate respondsToSelector:@selector(socket:didConnectToHost:port:)]) {
+        if (self.delegate && [(NSObject *)self.delegate respondsToSelector:@selector(socket:didConnectToHost:port:)]) {
             dispatch_async(self.delegateQueue, ^{
                 @autoreleasepool {
                     [self.delegate socket:self didConnectToHost:self.destinationHost port:self.destinationPort];
@@ -537,7 +537,7 @@
         }
     }
     else {
-        if (self.delegate && [self.delegate respondsToSelector:@selector(socket:didReadData:withTag:)]) {
+        if (self.delegate && [(NSObject *)self.delegate respondsToSelector:@selector(socket:didReadData:withTag:)]) {
             dispatch_async(self.delegateQueue, ^{
                 @autoreleasepool {
                     [self.delegate socket:self didReadData:data withTag:tag];
@@ -552,7 +552,7 @@
 
 
 - (void) socket:(GCDAsyncSocket *)sock didWriteDataWithTag:(long)tag {
-    if (self.delegate && [self.delegate respondsToSelector:@selector(socket:didWriteDataWithTag:)]) {
+    if (self.delegate && [(NSObject *)self.delegate respondsToSelector:@selector(socket:didWriteDataWithTag:)]) {
         dispatch_async(self.delegateQueue, ^{
             @autoreleasepool {
                 [self.delegate socket:self didWriteDataWithTag:tag];
@@ -564,7 +564,7 @@
 - (void)socketDidDisconnect:(GCDAsyncSocket *)sock withError:(NSError *)err {
     DDLogVerbose(@"proxySocket disconnected from proxy %@:%d / destination %@:%d", self.proxyHost, self.proxyPort, self.destinationHost, self.self.destinationPort);
 
-    if (self.delegate && [self.delegate respondsToSelector:@selector(socketDidDisconnect:withError:)]) {
+    if (self.delegate && [(NSObject *)self.delegate respondsToSelector:@selector(socketDidDisconnect:withError:)]) {
         dispatch_async(self.delegateQueue, ^{
             @autoreleasepool {
                 [self.delegate socketDidDisconnect:self withError:err];
@@ -576,7 +576,7 @@
 - (void) socketDidSecure:(GCDAsyncSocket *)sock {
     DDLogVerbose(@"didSecure proxy %@:%d / destination %@:%d", self.proxyHost, self.proxyPort, self.destinationHost, self.self.destinationPort);
     
-    if (self.delegate && [self.delegate respondsToSelector:@selector(socketDidSecure:)]) {
+    if (self.delegate && [(NSObject *)self.delegate respondsToSelector:@selector(socketDidSecure:)]) {
         dispatch_async(self.delegateQueue, ^{
             @autoreleasepool {
                 [self.delegate socketDidSecure:self];
@@ -587,7 +587,7 @@
 
 - (void)socketDidCloseReadStream:(GCDAsyncSocket *)sock
 {
-    if (self.delegate && [self.delegate respondsToSelector:@selector(socketDidCloseReadStream:)]) {
+    if (self.delegate && [(NSObject *)self.delegate respondsToSelector:@selector(socketDidCloseReadStream:)]) {
         dispatch_async(self.delegateQueue, ^{
             @autoreleasepool {
                 [self.delegate socketDidCloseReadStream:self];
@@ -598,7 +598,7 @@
 
 - (void)socket:(GCDAsyncSocket *)sock didWritePartialDataOfLength:(NSUInteger)partialLength tag:(long)tag
 {
-    if (self.delegate && [self.delegate respondsToSelector:@selector(socket:didWritePartialDataOfLength:tag:)]) {
+    if (self.delegate && [(NSObject *)self.delegate respondsToSelector:@selector(socket:didWritePartialDataOfLength:tag:)]) {
         dispatch_async(self.delegateQueue, ^{
             @autoreleasepool {
                 [self.delegate socket:self didWritePartialDataOfLength:partialLength tag:tag];
@@ -609,7 +609,7 @@
 
 - (void)socket:(GCDAsyncSocket *)sock didReceiveTrust:(SecTrustRef)trust completionHandler:(void (^)(BOOL))completionHandler
 {
-    if (self.delegate && [self.delegate respondsToSelector:@selector(socket:didReceiveTrust:completionHandler:)]) {
+    if (self.delegate && [(NSObject *)self.delegate respondsToSelector:@selector(socket:didReceiveTrust:completionHandler:)]) {
         dispatch_async(self.delegateQueue, ^{
             @autoreleasepool {
                 [self.delegate socket:self didReceiveTrust:trust completionHandler:completionHandler];
