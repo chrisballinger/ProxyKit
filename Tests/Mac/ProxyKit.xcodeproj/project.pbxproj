@@ -7,20 +7,19 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		A58CE750CE96AAA99D1A62DD /* Pods_ProxyKitTestsMac.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B3E0CA4E9CD0127208ADCE8 /* Pods_ProxyKitTestsMac.framework */; };
+		5ABB202587F020F3126005D8 /* Pods_ProxyKitTestsMac.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C99663732F924912F0F025A /* Pods_ProxyKitTestsMac.framework */; };
 		D9908E6D19791CA4009975FC /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D9908E2F197915FF009975FC /* Foundation.framework */; };
 		D9908E7D19791F4B009975FC /* ProxyKitTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D9908E7B19791F4B009975FC /* ProxyKitTests.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		1B3E0CA4E9CD0127208ADCE8 /* Pods_ProxyKitTestsMac.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ProxyKitTestsMac.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		5A59B136E900803393B5775E /* Pods-ProxyKitTestsMac.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ProxyKitTestsMac.release.xcconfig"; path = "Pods/Target Support Files/Pods-ProxyKitTestsMac/Pods-ProxyKitTestsMac.release.xcconfig"; sourceTree = "<group>"; };
-		5D1AF9532A7B65F3A49DE119 /* Pods_ProxyKitTestsiOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ProxyKitTestsiOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		CD86C7005DC81CB5208DEFB0 /* Pods-ProxyKitTestsMac.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ProxyKitTestsMac.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ProxyKitTestsMac/Pods-ProxyKitTestsMac.debug.xcconfig"; sourceTree = "<group>"; };
+		1C99663732F924912F0F025A /* Pods_ProxyKitTestsMac.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ProxyKitTestsMac.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		294B9D807B65057BB964854C /* Pods-ProxyKitTestsMac.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ProxyKitTestsMac.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ProxyKitTestsMac/Pods-ProxyKitTestsMac.debug.xcconfig"; sourceTree = "<group>"; };
 		D97536C41C6EA0D700365B8F /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = SOURCE_ROOT; };
 		D9908E2F197915FF009975FC /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		D9908E6B19791CA4009975FC /* ProxyKitTestsMac.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ProxyKitTestsMac.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		D9908E7B19791F4B009975FC /* ProxyKitTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ProxyKitTests.m; path = ../Shared/ProxyKitTests.m; sourceTree = SOURCE_ROOT; };
+		DDD5E2EF3CFD630A5B555170 /* Pods-ProxyKitTestsMac.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ProxyKitTestsMac.release.xcconfig"; path = "Pods/Target Support Files/Pods-ProxyKitTestsMac/Pods-ProxyKitTestsMac.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -29,18 +28,18 @@
 			buildActionMask = 2147483647;
 			files = (
 				D9908E6D19791CA4009975FC /* Foundation.framework in Frameworks */,
-				A58CE750CE96AAA99D1A62DD /* Pods_ProxyKitTestsMac.framework in Frameworks */,
+				5ABB202587F020F3126005D8 /* Pods_ProxyKitTestsMac.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		87E888F10779BA75F3838FC5 /* Pods */ = {
+		3CFE7EBBB831777F41A37DCC /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				CD86C7005DC81CB5208DEFB0 /* Pods-ProxyKitTestsMac.debug.xcconfig */,
-				5A59B136E900803393B5775E /* Pods-ProxyKitTestsMac.release.xcconfig */,
+				294B9D807B65057BB964854C /* Pods-ProxyKitTestsMac.debug.xcconfig */,
+				DDD5E2EF3CFD630A5B555170 /* Pods-ProxyKitTestsMac.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -51,7 +50,7 @@
 				D9908E5B19791C84009975FC /* ProxyKitTests */,
 				D9908E2E197915FF009975FC /* Frameworks */,
 				D9908E2D197915FF009975FC /* Products */,
-				87E888F10779BA75F3838FC5 /* Pods */,
+				3CFE7EBBB831777F41A37DCC /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -67,8 +66,7 @@
 			isa = PBXGroup;
 			children = (
 				D9908E2F197915FF009975FC /* Foundation.framework */,
-				5D1AF9532A7B65F3A49DE119 /* Pods_ProxyKitTestsiOS.framework */,
-				1B3E0CA4E9CD0127208ADCE8 /* Pods_ProxyKitTestsMac.framework */,
+				1C99663732F924912F0F025A /* Pods_ProxyKitTestsMac.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -98,12 +96,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = D9908E7819791CA4009975FC /* Build configuration list for PBXNativeTarget "ProxyKitTestsMac" */;
 			buildPhases = (
-				0641C8F8E20E86C0E87D8FC7 /* Check Pods Manifest.lock */,
+				1F8E96E406ED6C1393CC4165 /* [CP] Check Pods Manifest.lock */,
 				D9908E6719791CA4009975FC /* Sources */,
 				D9908E6819791CA4009975FC /* Frameworks */,
 				D9908E6919791CA4009975FC /* Resources */,
-				CAA855079E0B2FBA1F2DD5AA /* Embed Pods Frameworks */,
-				8B360922300E6AD0FE0F4765 /* Copy Pods Resources */,
+				2BFD707CF5BE8B6341F369A3 /* [CP] Embed Pods Frameworks */,
+				93FCA2E28208A8B2312FAEA4 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -120,7 +118,7 @@
 		D9908E24197915FF009975FC /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0720;
+				LastUpgradeCheck = 0820;
 				ORGANIZATIONNAME = "Christopher Ballinger";
 			};
 			buildConfigurationList = D9908E27197915FF009975FC /* Build configuration list for PBXProject "ProxyKit" */;
@@ -151,49 +149,49 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		0641C8F8E20E86C0E87D8FC7 /* Check Pods Manifest.lock */ = {
+		1F8E96E406ED6C1393CC4165 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Check Pods Manifest.lock";
+			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
-		8B360922300E6AD0FE0F4765 /* Copy Pods Resources */ = {
+		2BFD707CF5BE8B6341F369A3 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-ProxyKitTestsMac/Pods-ProxyKitTestsMac-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		CAA855079E0B2FBA1F2DD5AA /* Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Embed Pods Frameworks";
+			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-ProxyKitTestsMac/Pods-ProxyKitTestsMac-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		93FCA2E28208A8B2312FAEA4 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-ProxyKitTestsMac/Pods-ProxyKitTestsMac-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -223,13 +221,18 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -262,12 +265,17 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
@@ -283,7 +291,7 @@
 		};
 		D9908E7919791CA4009975FC /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = CD86C7005DC81CB5208DEFB0 /* Pods-ProxyKitTestsMac.debug.xcconfig */;
+			baseConfigurationReference = 294B9D807B65057BB964854C /* Pods-ProxyKitTestsMac.debug.xcconfig */;
 			buildSettings = {
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
@@ -296,6 +304,7 @@
 				);
 				HEADER_SEARCH_PATHS = "$(SRCROOT)/Pods/Headers/**";
 				INFOPLIST_FILE = Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) '@executable_path/../Frameworks' '@loader_path/../Frameworks'";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.chrisballinger.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = xctest;
@@ -304,7 +313,7 @@
 		};
 		D9908E7A19791CA4009975FC /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 5A59B136E900803393B5775E /* Pods-ProxyKitTestsMac.release.xcconfig */;
+			baseConfigurationReference = DDD5E2EF3CFD630A5B555170 /* Pods-ProxyKitTestsMac.release.xcconfig */;
 			buildSettings = {
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
@@ -313,6 +322,7 @@
 				);
 				HEADER_SEARCH_PATHS = "$(SRCROOT)/Pods/Headers/**";
 				INFOPLIST_FILE = Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) '@executable_path/../Frameworks' '@loader_path/../Frameworks'";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.chrisballinger.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = xctest;

@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "ProxyKit"
-  s.version      = "1.1.0"
+  s.version      = "1.2.0"
   s.summary      = "SOCKS proxy server and socket client built upon GCDAsyncSocket."
   s.homepage     = "https://github.com/chrisballinger/ProxyKit"
   s.license      = { :type => "MIT", :file => "LICENSE" }
@@ -14,8 +14,8 @@ Pod::Spec.new do |s|
   s.default_subspec = 'standard'
 
   s.subspec 'common' do |ss|
-    ss.dependency 'CocoaAsyncSocket', '~> 7.4'
-    ss.dependency 'CocoaLumberjack', '~> 2.2'
+    ss.dependency 'CocoaAsyncSocket', '~> 7.6'
+    ss.dependency 'CocoaLumberjack' # Don't pin version because of 2->3 dependency upgrade nightmare
     ss.requires_arc = true
   end
 
