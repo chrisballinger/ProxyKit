@@ -10,6 +10,7 @@ before_install:
 install:
   - cd Tests
   - bundle install
+  - bundle exec pod repo update
   - bundle exec pod install --project-directory=./iOS
   - bundle exec pod install --project-directory=./Mac
   - cd ../
