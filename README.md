@@ -1,9 +1,9 @@
 # [ProxyKit](https://github.com/chrisballinger/proxykit/)
 [![Build Status](https://travis-ci.org/chrisballinger/ProxyKit.svg?branch=master)](https://travis-ci.org/chrisballinger/ProxyKit)
-[![Version](https://cocoapod-badges.herokuapp.com/v/ProxyKit/badge.svg)](http://cocoadocs.org/docsets/ProxyKit)
+[![Version](https://cocoapod-badges.herokuapp.com/v/ProxyKit/badge.svg)](http://cocoadocs.org/docsets/ProxyKit/)
 [![Platform](https://cocoapod-badges.herokuapp.com/p/ProxyKit/badge.svg)](http://cocoadocs.org/docsets/ProxyKit)
 
-Objective-C [SOCKS 5](http://en.wikipedia.org/wiki/SOCKS) / [RFC 1928](http://www.ietf.org/rfc/rfc1928.txt) proxy server and socket client libraries built upon [GCDAsyncSocket](https://github.com/robbiehanson/CocoaAsyncSocket).
+Objective-C [SOCKS 5](https://en.wikipedia.org/wiki/SOCKS) / [RFC 1928](http://www.ietf.org/rfc/rfc1928.txt) proxy server and socket client libraries built upon [GCDAsyncSocket](https://github.com/robbiehanson/CocoaAsyncSocket).
 
 ## Usage
 
@@ -48,7 +48,7 @@ You can run tests by opening up `ProxyKit.xcworkspace` after installing the Pods
 ## Apps Using This Library
 
 * [Tether](https://github.com/chrisballinger/Tether-iOS) - Tethering for non-jailbroken iOS Devices over USB.
-* [ChatSecure](https://github.com/chrisballinger/ChatSecure-iOS) - free and open source encrypted chat client for iPhone and Android that supports OTR encryption over XMPP.
+* [ChatSecure](https://github.com/ChatSecure/ChatSecure-iOS) - free and open source encrypted chat client for iPhone and Android that supports OTR encryption over XMPP.
 
 ## TODO
 
